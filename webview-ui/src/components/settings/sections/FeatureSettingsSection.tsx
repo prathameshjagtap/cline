@@ -1,3 +1,4 @@
+import { OPENAI_TTS_VOICES } from "@shared/NarrationSettings"
 import { UpdateSettingsRequest } from "@shared/proto/cline/state"
 import { EmptyRequest } from "@shared/proto/index.cline"
 import { OpenaiReasoningEffort } from "@shared/storage/types"
@@ -407,6 +408,129 @@ const FeatureSettingsSection = ({ renderSectionHeader }: FeatureSettingsSectionP
 									value={focusChainSettings?.remindClineInterval || 6}
 									valueWidth="w-6"
 								/>
+							)}
+							{/* Thinking Out Loud expanded settings */}
+							{narrationSettings?.narrationEnabled && (
+								<div className="px-3 pb-3 space-y-3 border-t border-editor-widget-border/30 pt-3">
+									{/* TTS Provider */}
+									<div className="space-y-1">
+										<Label className="text-xs">TTS Provider</Label>
+										<Select
+											onValueChange={(v) =>
+												updateSetting("narrationSettings", {
+													...narrationSettings,
+													narrationProvider: v,
+												})
+											}
+											value={narrationSettings.narrationProvider || "browser"}>
+											<SelectTrigger className="w-full">
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="browser">Browser (Free, Local)</SelectItem>
+												<SelectItem value="openai">OpenAI TTS (Cloud, Higher Quality)</SelectItem>
+											</SelectContent>
+										</Select>
+										{narrationSettings.narrationProvider === "openai" && (
+											<p className="text-xs text-description">
+												Uses your OpenAI API key. Costs ~$15/1M characters.
+											</p>
+										)}
+									</div>
+
+									{/* OpenAI Voice (only when openai provider selected) */}
+									{narrationSettings.narrationProvider === "openai" && (
+										<div className="space-y-1">
+											<Label className="text-xs">Voice</Label>
+											<Select
+												onValueChange={(v) =>
+													updateSetting("narrationSettings", {
+														...narrationSettings,
+														openaiTtsVoice: v,
+													})
+												}
+												value={narrationSettings.openaiTtsVoice || "nova"}>
+												<SelectTrigger className="w-full">
+													<SelectValue />
+												</SelectTrigger>
+												<SelectContent>
+													{OPENAI_TTS_VOICES.map((voice) => (
+														<SelectItem key={voice.id} value={voice.id}>
+															{voice.label}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+										</div>
+									)}
+
+									{/* OpenAI Model Quality (only when openai provider selected) */}
+									{narrationSettings.narrationProvider === "openai" && (
+										<div className="space-y-1">
+											<Label className="text-xs">Quality</Label>
+											<Select
+												onValueChange={(v) =>
+													updateSetting("narrationSettings", {
+														...narrationSettings,
+														openaiTtsModel: v,
+													})
+												}
+												value={narrationSettings.openaiTtsModel || "tts-1"}>
+												<SelectTrigger className="w-full">
+													<SelectValue />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="tts-1">Standard (faster, ~$15/1M chars)</SelectItem>
+													<SelectItem value="tts-1-hd">HD (slower, ~$30/1M chars)</SelectItem>
+												</SelectContent>
+											</Select>
+										</div>
+									)}
+
+									{/* Verbosity */}
+									<div className="space-y-1">
+										<Label className="text-xs">Verbosity</Label>
+										<Select
+											onValueChange={(v) =>
+												updateSetting("narrationSettings", {
+													...narrationSettings,
+													narrationVerbosity: v,
+												})
+											}
+											value={narrationSettings.narrationVerbosity || "normal"}>
+											<SelectTrigger className="w-full">
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="minimal">Minimal (actions only)</SelectItem>
+												<SelectItem value="normal">Normal (actions + thinking summary)</SelectItem>
+												<SelectItem value="verbose">Verbose (everything)</SelectItem>
+											</SelectContent>
+										</Select>
+									</div>
+
+									{/* Reasoning Summarization toggle */}
+									{narrationSettings.narrationProvider === "openai" && (
+										<div className="flex items-center justify-between">
+											<div>
+												<Label className="text-xs">Summarize Thinking</Label>
+												<p className="text-xs text-description">
+													Use AI to summarize reasoning into natural speech
+												</p>
+											</div>
+											<Switch
+												checked={narrationSettings.reasoningSummarization ?? false}
+												onCheckedChange={(checked) =>
+													updateSetting("narrationSettings", {
+														...narrationSettings,
+														reasoningSummarization: checked,
+													})
+												}
+												size="lg"
+											/>
+										</div>
+									)}
+								</div>
 							)}
 						</div>
 					</div>

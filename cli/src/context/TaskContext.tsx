@@ -3,10 +3,12 @@
  * Provides access to ExtensionState and task controller
  */
 
+import { registerNarrationCallback } from "@core/controller/ui/subscribeToNarration"
 import { registerPartialMessageCallback } from "@core/controller/ui/subscribeToPartialMessage"
 import type { ClineMessage, ExtensionState } from "@shared/ExtensionMessage"
 import { convertProtoToClineMessage } from "@shared/proto-conversions/cline-message"
 import React, { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react"
+import { getCliNarrationPlayer } from "../services/CliNarrationPlayer"
 
 interface TaskContextType {
 	state: Partial<ExtensionState>
@@ -82,6 +84,18 @@ export const TaskContextProvider: React.FC<TaskContextProviderProps> = ({ contro
 			})
 		})
 
+		// Subscribe to narration events (for CLI TTS)
+		const narrationPlayer = getCliNarrationPlayer()
+		const narrationSettings = controller.stateManager?.getGlobalSettingsKey?.("narrationSettings")
+		narrationPlayer.setEnabled(narrationSettings?.narrationEnabled ?? false)
+
+		const unsubscribeNarration = registerNarrationCallback((text, interrupt) => {
+			if (interrupt) {
+				narrationPlayer.cancel()
+			}
+			narrationPlayer.speak(text)
+		})
+
 		// Get initial state
 		handleStateUpdate()
 
@@ -89,6 +103,8 @@ export const TaskContextProvider: React.FC<TaskContextProviderProps> = ({ contro
 		return () => {
 			controller.postStateToWebview = originalPostState
 			unsubscribePartial()
+			unsubscribeNarration()
+			narrationPlayer.cancel()
 		}
 	}, [controller])
 

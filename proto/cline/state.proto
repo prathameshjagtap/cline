@@ -292,6 +292,10 @@ message NarrationSettings {
   bool narration_enabled = 1;
   double narration_rate = 2;
   string narration_verbosity = 3;
+  string narration_provider = 4;
+  string openai_tts_voice = 5;
+  string openai_tts_model = 6;
+  bool reasoning_summarization = 7;
 }
 
 message State {

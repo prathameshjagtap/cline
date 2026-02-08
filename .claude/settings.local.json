@@ -9,7 +9,10 @@
 			"Bash(npm run lint)",
 			"Bash(npm run compile:*)",
 			"Bash(npm run install:all:*)",
-			"Bash(npm run build:webview:*)"
+			"Bash(npm run build:webview:*)",
+			"Bash(npm run test:unit:*)",
+			"Bash(npm run test:webview:*)",
+			"Bash(node esbuild.mjs:*)"
 		]
 	}
 }

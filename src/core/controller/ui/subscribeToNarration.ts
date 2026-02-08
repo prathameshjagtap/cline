@@ -31,18 +31,44 @@ export async function subscribeToNarration(
 }
 
 /**
- * Send narration text to all active subscribers
+ * Send narration text (and optional audio) to all active subscribers
  */
-export async function sendNarrationEvent(text: string, interrupt = false): Promise<void> {
+export async function sendNarrationEvent(text: string, interrupt = false, audioBase64 = "", audioFormat = ""): Promise<void> {
 	Logger.info(`[Narration] Sending event to ${activeNarrationSubscriptions.size} subscribers: "${text}"`)
+
+	// Send to gRPC stream subscribers (webview)
 	const promises = Array.from(activeNarrationSubscriptions).map(async (responseStream) => {
 		try {
-			await responseStream({ text, interrupt }, false)
+			await responseStream({ text, interrupt, audioBase64, audioFormat }, false)
 			Logger.info("[Narration] Event sent successfully")
 		} catch (error) {
 			Logger.error("Error sending narration event:", error)
 			activeNarrationSubscriptions.delete(responseStream)
 		}
 	})
+
+	// Send to callback subscribers (CLI)
+	for (const callback of callbackSubscriptions) {
+		try {
+			callback(text, interrupt)
+		} catch (error) {
+			Logger.error("Error in narration callback:", error)
+		}
+	}
+
 	await Promise.all(promises)
+}
+
+// Callback-based subscriptions for CLI and non-gRPC consumers
+export type NarrationCallback = (text: string, interrupt: boolean) => void
+const callbackSubscriptions = new Set<NarrationCallback>()
+
+/**
+ * Register a callback to receive narration events (for CLI)
+ */
+export function registerNarrationCallback(callback: NarrationCallback): () => void {
+	callbackSubscriptions.add(callback)
+	return () => {
+		callbackSubscriptions.delete(callback)
+	}
 }

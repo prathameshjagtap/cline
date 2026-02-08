@@ -200,6 +200,15 @@ function synthesizeAsk(ask: ClineAsk, text: string | undefined, verbosity: Narra
 	}
 }
 
+/**
+ * Check if a narration event is a reasoning event that could benefit from
+ * LLM summarization. Called by NarrationEventBus to decide whether to
+ * call ReasoningSummarizer.
+ */
+export function isReasoningEvent(event: NarrationEvent): boolean {
+	return event.type === "say" && event.say === "reasoning" && !event.partial && !!event.text
+}
+
 /** Extract the filename from a path */
 function basename(filePath: string): string {
 	const parts = filePath.split("/")

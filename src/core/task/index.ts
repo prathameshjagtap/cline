@@ -321,9 +321,11 @@ export class Task {
 		// Initialize narration
 		const narrationSettings = this.stateManager.getGlobalSettingsKey("narrationSettings")
 		if (narrationSettings?.narrationEnabled) {
-			this.narrationBus = new NarrationEventBus(narrationSettings)
-			this.narrationBus.subscribe((text) => {
-				sendNarrationEvent(text).catch(() => {})
+			const openAiApiKey =
+				narrationSettings.narrationProvider === "openai" ? this.stateManager.getSecretKey("openAiApiKey") : undefined
+			this.narrationBus = new NarrationEventBus(narrationSettings, openAiApiKey)
+			this.narrationBus.subscribe((text, audioBase64, audioFormat) => {
+				sendNarrationEvent(text, false, audioBase64 ?? "", audioFormat ?? "").catch(() => {})
 			})
 		}
 
@@ -2096,6 +2098,20 @@ export class Task {
 				}
 				let content = block.content
 				if (content) {
+					// Extract thinking content for narration before stripping tags
+					// This handles models that output <thinking>/<think> tags in text (not native extended thinking)
+					if (!block.partial && this.narrationBus) {
+						const thinkingMatch = content.match(/<(?:thinking|think)>([\s\S]*?)<\/(?:thinking|think)>/i)
+						if (thinkingMatch?.[1]?.trim()) {
+							this.narrationBus.emit({
+								type: "say",
+								say: "reasoning",
+								text: thinkingMatch[1].trim(),
+								partial: false,
+							})
+						}
+					}
+
 					// (have to do this for partial and complete since sending content in thinking tags to markdown renderer will automatically be removed)
 					// Remove end substrings of <thinking or </thinking (below xml parsing is only for opening tags)
 					// (this is done with the xml parsing below now, but keeping here for reference)

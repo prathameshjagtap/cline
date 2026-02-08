@@ -231,6 +231,8 @@ message ShowWebviewEvent {
 message NarrationTextEvent {
   string text = 1;
   bool interrupt = 2;
+  string audio_base64 = 3;
+  string audio_format = 4;
 }
 
 // UiService provides methods for managing UI interactions
