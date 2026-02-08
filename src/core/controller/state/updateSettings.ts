@@ -209,6 +209,17 @@ export async function updateSettings(controller: Controller, request: UpdateSett
 			}
 			controller.stateManager.setGlobalState("dictationSettings", dictationSettings)
 		}
+
+		if (request.narrationSettings !== undefined) {
+			const narrationSettings = {
+				narrationEnabled: request.narrationSettings.narrationEnabled ?? false,
+				narrationRate: request.narrationSettings.narrationRate || 1.1,
+				narrationVerbosity:
+					(request.narrationSettings.narrationVerbosity as "minimal" | "normal" | "verbose") || "normal",
+			}
+			controller.stateManager.setGlobalState("narrationSettings", narrationSettings)
+		}
+
 		// Update auto-condense setting
 		if (request.useAutoCondense !== undefined) {
 			if (controller.task) {

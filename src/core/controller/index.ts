@@ -416,10 +416,9 @@ export class Controller {
 				)
 
 				return true
-			} else {
-				this.cancelTask()
-				return false
 			}
+			this.cancelTask()
+			return false
 		}
 
 		return false
@@ -855,6 +854,7 @@ export class Controller {
 		const browserSettings = this.stateManager.getGlobalSettingsKey("browserSettings")
 		const focusChainSettings = this.stateManager.getGlobalSettingsKey("focusChainSettings")
 		const dictationSettings = this.stateManager.getGlobalSettingsKey("dictationSettings")
+		const narrationSettings = this.stateManager.getGlobalSettingsKey("narrationSettings")
 		const preferredLanguage = this.stateManager.getGlobalSettingsKey("preferredLanguage")
 		const openaiReasoningEffort = this.stateManager.getGlobalSettingsKey("openaiReasoningEffort")
 		const mode = this.stateManager.getGlobalSettingsKey("mode")
@@ -940,6 +940,7 @@ export class Controller {
 			browserSettings,
 			focusChainSettings,
 			dictationSettings: updatedDictationSettings,
+			narrationSettings,
 			preferredLanguage,
 			openaiReasoningEffort,
 			mode,

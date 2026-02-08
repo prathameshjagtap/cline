@@ -1,0 +1,15 @@
+{
+	"permissions": {
+		"allow": [
+			"Bash(npm run protos:*)",
+			"Bash(npm install:*)",
+			"Bash(softwareupdate:*)",
+			"Bash(npm run check-types:*)",
+			"Bash(npm run format:fix:*)",
+			"Bash(npm run lint)",
+			"Bash(npm run compile:*)",
+			"Bash(npm run install:all:*)",
+			"Bash(npm run build:webview:*)"
+		]
+	}
+}

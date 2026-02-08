@@ -5,6 +5,7 @@ import { DEFAULT_DICTATION_SETTINGS, DictationSettings } from "@shared/Dictation
 import { DEFAULT_PLATFORM, type ExtensionState } from "@shared/ExtensionMessage"
 import { DEFAULT_FOCUS_CHAIN_SETTINGS } from "@shared/FocusChainSettings"
 import { DEFAULT_MCP_DISPLAY_MODE } from "@shared/McpDisplayMode"
+import { DEFAULT_NARRATION_SETTINGS } from "@shared/NarrationSettings"
 import type { UserInfo } from "@shared/proto/cline/account"
 import { EmptyRequest } from "@shared/proto/cline/common"
 import type { OpenRouterCompatibleModelInfo } from "@shared/proto/cline/models"
@@ -27,6 +28,7 @@ import {
 } from "../../../src/shared/api"
 import { Environment } from "../../../src/shared/config-types"
 import type { McpMarketplaceCatalog, McpServer, McpViewTab } from "../../../src/shared/mcp"
+import { useNarration } from "../hooks/useNarration"
 import { McpServiceClient, ModelsServiceClient, StateServiceClient, UiServiceClient } from "../services/grpc-client"
 
 export interface ExtensionStateContextType extends ExtensionState {
@@ -239,6 +241,7 @@ export const ExtensionStateContextProvider: React.FC<{
 		autoApprovalSettings: DEFAULT_AUTO_APPROVAL_SETTINGS,
 		browserSettings: DEFAULT_BROWSER_SETTINGS,
 		dictationSettings: DEFAULT_DICTATION_SETTINGS,
+		narrationSettings: DEFAULT_NARRATION_SETTINGS,
 		focusChainSettings: DEFAULT_FOCUS_CHAIN_SETTINGS,
 		preferredLanguage: "English",
 		openaiReasoningEffort: "medium",
@@ -913,6 +916,9 @@ export const ExtensionStateContextProvider: React.FC<{
 				dictationSettings: value,
 			})),
 	}
+
+	// Narration: subscribe to narration events and play via Web Speech API
+	useNarration(state.narrationSettings)
 
 	return <ExtensionStateContext.Provider value={contextValue}>{children}</ExtensionStateContext.Provider>
 }

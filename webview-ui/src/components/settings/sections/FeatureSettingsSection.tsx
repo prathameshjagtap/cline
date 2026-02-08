@@ -122,6 +122,15 @@ const experimentalFeatures: FeatureToggle[] = [
 		settingKey: "focusChainSettings",
 		nestedKey: "enabled",
 	},
+	{
+		id: "thinking-out-loud",
+		label: "Thinking Out Loud",
+		description: "Narrate Cline's actions and thinking as spoken audio using your browser's built-in text-to-speech.",
+		stateKey: "narrationEnabled",
+		settingKey: "narrationSettings",
+		nestedKey: "narrationEnabled",
+		isExperimental: true,
+	},
 ]
 
 const FeatureRow = memo(
@@ -195,6 +204,7 @@ const FeatureSettingsSection = ({ renderSectionHeader }: FeatureSettingsSectionP
 		clineWebToolsEnabled,
 		worktreesEnabled,
 		focusChainSettings,
+		narrationSettings,
 		remoteConfigSettings,
 		subagentsEnabled,
 		subagentTerminalOutputLineLimit,
@@ -249,6 +259,7 @@ const FeatureSettingsSection = ({ renderSectionHeader }: FeatureSettingsSectionP
 		strictPlanModeEnabled,
 		nativeToolCallSetting,
 		focusChainEnabled: focusChainSettings?.enabled,
+		narrationEnabled: narrationSettings?.narrationEnabled,
 		useAutoCondense,
 		clineWebToolsEnabled: clineWebToolsEnabled?.user,
 		worktreesEnabled: worktreesEnabled?.user,
@@ -271,13 +282,15 @@ const FeatureSettingsSection = ({ renderSectionHeader }: FeatureSettingsSectionP
 				let currentValue = {}
 				if (feature.settingKey === "focusChainSettings") {
 					currentValue = focusChainSettings ?? {}
+				} else if (feature.settingKey === "narrationSettings") {
+					currentValue = narrationSettings ?? {}
 				}
 				updateSetting(feature.settingKey, { ...currentValue, [feature.nestedKey]: checked })
 			} else {
 				updateSetting(feature.settingKey, checked)
 			}
 		},
-		[focusChainSettings],
+		[focusChainSettings, narrationSettings],
 	)
 
 	return (

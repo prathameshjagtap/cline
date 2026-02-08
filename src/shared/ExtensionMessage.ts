@@ -1,6 +1,7 @@
 // type that represents json data that is sent from extension to webview, called ExtensionMessage and has 'type' enum which can be 'plusButtonClicked' or 'settingsButtonClicked' or 'hello'
 
 import { WorkspaceRoot } from "@shared/multi-root/types"
+import type { NarrationSettings } from "@shared/NarrationSettings"
 import { RemoteConfigFields } from "@shared/storage/state-keys"
 import type { Environment } from "../config"
 import { AutoApprovalSettings } from "./AutoApprovalSettings"
@@ -92,6 +93,7 @@ export interface ExtensionState {
 	worktreesEnabled?: ClineFeatureSetting
 	focusChainSettings: FocusChainSettings
 	dictationSettings: DictationSettings
+	narrationSettings: NarrationSettings
 	customPrompt?: string
 	autoCondenseThreshold?: number
 	favoritedModelIds: string[]
