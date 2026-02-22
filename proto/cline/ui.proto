@@ -228,6 +228,13 @@ message ShowWebviewEvent {
   bool preserve_editor_focus = 1; // When true, webview should not steal focus from editor
 }
 
+message NarrationTextEvent {
+  string text = 1;
+  bool interrupt = 2;
+  string audio_base64 = 3;
+  string audio_format = 4;
+}
+
 // UiService provides methods for managing UI interactions
 service UiService {
   // Scrolls to a specific settings section in the settings view
@@ -280,4 +287,7 @@ service UiService {
 
   // Opens the Cline walkthrough
   rpc openWalkthrough(EmptyRequest) returns (Empty);
+
+  // Subscribe to narration text events
+  rpc subscribeToNarration(EmptyRequest) returns (stream NarrationTextEvent);
 }

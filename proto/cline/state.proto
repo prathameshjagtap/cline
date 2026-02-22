@@ -101,7 +101,7 @@ message Secrets {
   optional string oca_refresh_token = 42;
   optional string mcp_o_auth_secrets = 43;
   optional string cline_api_key = 44;
-  optional string openai_codex_oauth_credentials = 46;
+  optional string openai_codex_oauth_credentials = 47;
 }
 
 // NOTE: Add new fields under API_HANDLER_SETTINGS_FIELDS or USER_SETTINGS_FIELDS
@@ -279,6 +279,7 @@ message Settings {
   optional bool worktrees_enabled = 172;
   optional bool auto_approve_all_toggled = 174;
   map<string, string> open_ai_headers = 175;
+  optional string narration_settings = 176;
 }
 
 message DictationSettings {
@@ -286,6 +287,17 @@ message DictationSettings {
   bool dictation_enabled = 2;
   string dictation_language = 3;
 }
+
+message NarrationSettings {
+  bool narration_enabled = 1;
+  double narration_rate = 2;
+  string narration_verbosity = 3;
+  string narration_provider = 4;
+  string openai_tts_voice = 5;
+  string openai_tts_model = 6;
+  bool reasoning_summarization = 7;
+}
+
 message State {
   string state_json = 1;
 }
@@ -425,6 +437,7 @@ message UpdateSettingsRequest {
   optional string oca_reasoning_effort = 37;
   optional bool opt_out_of_remote_config = 39;
   optional bool worktrees_enabled = 40;
+  optional NarrationSettings narration_settings = 41;
 }
 
 message UpdateTerminalConnectionTimeoutRequest {

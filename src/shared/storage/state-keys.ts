@@ -14,6 +14,7 @@ import { DEFAULT_FOCUS_CHAIN_SETTINGS, FocusChainSettings } from "@shared/FocusC
 import { HistoryItem } from "@shared/HistoryItem"
 import { DEFAULT_MCP_DISPLAY_MODE, McpDisplayMode } from "@shared/McpDisplayMode"
 import { WorkspaceRoot } from "@shared/multi-root/types"
+import { DEFAULT_NARRATION_SETTINGS, type NarrationSettings } from "@shared/NarrationSettings"
 import { GlobalInstructionsFile } from "@shared/remote-config/schema"
 import { Mode, OpenaiReasoningEffort } from "@shared/storage/types"
 import { TelemetrySetting } from "@shared/TelemetrySetting"
@@ -264,6 +265,10 @@ const USER_SETTINGS_FIELDS = {
 	dictationSettings: {
 		default: DEFAULT_DICTATION_SETTINGS as DictationSettings,
 		transform: (v: any) => ({ ...DEFAULT_DICTATION_SETTINGS, ...v }),
+	},
+	narrationSettings: {
+		default: DEFAULT_NARRATION_SETTINGS as NarrationSettings,
+		transform: (v: any) => ({ ...DEFAULT_NARRATION_SETTINGS, ...v }),
 	},
 	focusChainSettings: { default: DEFAULT_FOCUS_CHAIN_SETTINGS as FocusChainSettings },
 	customPrompt: { default: undefined as "compact" | undefined },

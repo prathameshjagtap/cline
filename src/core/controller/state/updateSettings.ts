@@ -209,6 +209,31 @@ export async function updateSettings(controller: Controller, request: UpdateSett
 			}
 			controller.stateManager.setGlobalState("dictationSettings", dictationSettings)
 		}
+
+		if (request.narrationSettings !== undefined) {
+			const narrationSettings = {
+				narrationEnabled: request.narrationSettings.narrationEnabled ?? false,
+				narrationRate: request.narrationSettings.narrationRate || 1.1,
+				narrationVerbosity:
+					(request.narrationSettings.narrationVerbosity as "minimal" | "normal" | "verbose") || "normal",
+				narrationProvider: (request.narrationSettings.narrationProvider as "browser" | "openai") || "browser",
+				openaiTtsVoice:
+					(request.narrationSettings.openaiTtsVoice as
+						| "alloy"
+						| "ash"
+						| "coral"
+						| "echo"
+						| "fable"
+						| "nova"
+						| "onyx"
+						| "sage"
+						| "shimmer") || "nova",
+				openaiTtsModel: (request.narrationSettings.openaiTtsModel as "tts-1" | "tts-1-hd") || "tts-1",
+				reasoningSummarization: request.narrationSettings.reasoningSummarization ?? false,
+			}
+			controller.stateManager.setGlobalState("narrationSettings", narrationSettings)
+		}
+
 		// Update auto-condense setting
 		if (request.useAutoCondense !== undefined) {
 			if (controller.task) {
